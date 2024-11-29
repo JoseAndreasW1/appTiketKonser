@@ -17,11 +17,12 @@ import java.util.Date
 import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
-    private var arConcert = ArrayList<Concert>()
-    private lateinit var _rvConcert : RecyclerView
+    private lateinit var _rvOnGoingConcert : RecyclerView
+    private lateinit var _rvUpComingConcert : RecyclerView
 
     val db = Firebase.firestore
-    var listConcert = ArrayList<Concert>()
+    var listOnGoingConcert = ArrayList<Concert>()
+    var listUpComingConcert = ArrayList<Concert>()
     val sdf = SimpleDateFormat("MMMM dd, yyyy HH:mm", Locale.ENGLISH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +35,8 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
-        _rvConcert = findViewById(R.id.rvConcert)
+        _rvOnGoingConcert = findViewById(R.id.rvOnGoingConcert)
+        _rvUpComingConcert = findViewById(R.id.rvUpComingConcert)
 
         loadData()
 //        tampilkanData()
@@ -44,7 +46,8 @@ class HomeActivity : AppCompatActivity() {
         db.collection("tbConcert")
             .get()
             .addOnSuccessListener { result ->
-                listConcert.clear()
+                listOnGoingConcert.clear()
+                listUpComingConcert.clear()
                 for (document in result) {
                     val startPreOrderDate = document.data["StartPreOrderDate"] as Timestamp
                     val endPreOrderDate = document.data["EndPreOrderDate"] as Timestamp
@@ -65,10 +68,16 @@ class HomeActivity : AppCompatActivity() {
                         document.data["NumberOfTickets"].toString().toInt(),
                         document.data["Venue"].toString()
                     )
-                    listConcert.add(concert)
+                    if (startPreOrderDate.toDate().after(Date())) {
+                        // Upcoming concert: Pre-order belum dimulai
+                        listUpComingConcert.add(concert)
+                    } else if (startPreOrderDate.toDate().before(Date()) && endPreOrderDate.toDate().after(Date())) {
+                        // Ongoing concert: Pre-order sedang berlangsung
+                        listOnGoingConcert.add(concert)
+                    }
                 }
                 onComplete()
-                Log.d("MainActivity Firebase", "Success ")
+                Log.d("MainActivity Firebase", "Success")
             }
             .addOnFailureListener {
                 Log.d("MainActivity Firebase", "Error getting documents: ", it)
@@ -76,19 +85,17 @@ class HomeActivity : AppCompatActivity() {
     }
 
     fun loadData(){
-        arConcert.clear()
-
         readData(db){
-            arConcert.addAll(listConcert)
             tampilkanData()
         }
     }
 
     fun tampilkanData(){
-        _rvConcert.layoutManager = LinearLayoutManager(this)
+        _rvOnGoingConcert.layoutManager = LinearLayoutManager(this)
+        _rvUpComingConcert.layoutManager = LinearLayoutManager(this)
 
-        val adapterTask = AdapterRecViewConcert(arConcert)
-        _rvConcert.adapter = adapterTask
+        _rvOnGoingConcert.adapter = AdapterRecViewConcert(listOnGoingConcert)
+        _rvUpComingConcert.adapter = AdapterRecViewConcert(listUpComingConcert)
     }
 
 }
