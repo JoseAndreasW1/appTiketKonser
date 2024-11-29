@@ -2,6 +2,8 @@ package com.example.apptiketkonser
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -87,6 +89,25 @@ class HomeActivity : AppCompatActivity() {
     fun loadData(){
         readData(db){
             tampilkanData()
+
+            val _tvNoOngoingConcert = findViewById<TextView>(R.id.tvNoOngoingConcert)
+            val _tvNoUpComingConcert = findViewById<TextView>(R.id.tvNoUpComingConcert)
+
+            //Jika Concert empty
+            if(listOnGoingConcert.isEmpty()){
+                _rvOnGoingConcert.visibility = View.GONE
+                _tvNoOngoingConcert.visibility = View.VISIBLE
+            } else {
+                _rvOnGoingConcert.visibility = View.VISIBLE
+                _tvNoOngoingConcert.visibility = View.GONE
+            }
+            if(listUpComingConcert.isEmpty()){
+                _rvUpComingConcert.visibility = View.GONE
+                _tvNoUpComingConcert.visibility = View.VISIBLE
+            } else {
+                _rvUpComingConcert.visibility = View.VISIBLE
+                _tvNoUpComingConcert.visibility = View.GONE
+            }
         }
     }
 
