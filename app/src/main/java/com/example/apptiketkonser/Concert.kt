@@ -9,5 +9,6 @@ data class Concert(
     var description: String,
     var imageUrl: String,
     var price: Int,
-    var numberOfTickets: Int
+    var numberOfTickets: Int,
+    var venue: String
 )

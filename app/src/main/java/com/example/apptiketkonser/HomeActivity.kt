@@ -9,8 +9,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
     private var arConcert = ArrayList<Concert>()
@@ -18,6 +22,8 @@ class HomeActivity : AppCompatActivity() {
 
     val db = Firebase.firestore
     var listConcert = ArrayList<Concert>()
+    val sdf = SimpleDateFormat("MMMM dd, yyyy HH:mm", Locale.ENGLISH)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,28 +37,38 @@ class HomeActivity : AppCompatActivity() {
         _rvConcert = findViewById(R.id.rvConcert)
 
         loadData()
-        tampilkanData()
+//        tampilkanData()
     }
 
-    fun readData(db: FirebaseFirestore) {
+    fun readData(db: FirebaseFirestore, onComplete: () -> Unit) {
         db.collection("tbConcert")
             .get()
             .addOnSuccessListener { result ->
                 listConcert.clear()
                 for (document in result) {
+                    val startPreOrderDate = document.data["StartPreOrderDate"] as Timestamp
+                    val endPreOrderDate = document.data["EndPreOrderDate"] as Timestamp
+                    val startConcertDate = document.data["StartConcertDate"] as Timestamp
+
+                    val formattedStartPreOrderDate = sdf.format(startPreOrderDate.toDate())
+                    val formattedEndPreOrderDate = sdf.format(endPreOrderDate.toDate())
+                    val formattedStartConcertDate = sdf.format(startConcertDate.toDate())
                     val concert = Concert(
-                        document.data["id"].toString().toInt(),
+                        1,
                         document.data["Name"].toString(),
-                        document.data["StartPreOrderDate"].toString(),
-                        document.data["EndPreOrderDate"].toString(),
-                        document.data["StartConcertDate"].toString(),
+                        formattedStartPreOrderDate,
+                        formattedEndPreOrderDate,
+                        formattedStartConcertDate,
                         document.data["Description"].toString(),
                         document.data["ImageUrl"].toString(),
                         document.data["Price"].toString().toInt(),
-                        document.data["NumberOfTickets"].toString().toInt()
+                        document.data["NumberOfTickets"].toString().toInt(),
+                        document.data["Venue"].toString()
                     )
                     listConcert.add(concert)
                 }
+                onComplete()
+                Log.d("MainActivity Firebase", "Success ")
             }
             .addOnFailureListener {
                 Log.d("MainActivity Firebase", "Error getting documents: ", it)
@@ -62,9 +78,9 @@ class HomeActivity : AppCompatActivity() {
     fun loadData(){
         arConcert.clear()
 
-        readData(db)
-        for (concert in listConcert){
-            arConcert.add(concert)
+        readData(db){
+            arConcert.addAll(listConcert)
+            tampilkanData()
         }
     }
 
