@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "147669430213",
+    "project_id": "projectpabakonser",
+    "storage_bucket": "projectpabakonser.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147669430213:android:30bab5ecdd61c126c365ac",
+        "android_client_info": {
+          "package_name": "com.example.apptiketkonser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC72gZJMvvf8MfzOAHWeYE9RzbGkSXksT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
