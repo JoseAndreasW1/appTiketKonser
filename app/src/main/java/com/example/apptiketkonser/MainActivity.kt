@@ -18,7 +18,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(this, HomeActivity::class.java)
+//        startActivity(intent)\
+
+        val mFragmentManager = supportFragmentManager
+        val mfLogin = fLogin()
+
+        mFragmentManager.findFragmentByTag(fLogin::class.java.simpleName)
+        mFragmentManager
+            .beginTransaction()
+            .add(R.id.frameContainer, mfLogin, fLogin::class.java.simpleName)
+            .commit()
+
     }
 }
