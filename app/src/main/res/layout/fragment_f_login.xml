@@ -47,7 +47,7 @@
         android:text="SIGN IN"
         android:textColor="@color/white"
         android:backgroundTint="@null"
-        android:background="@drawable/gradient_pruple"/>
+        android:background="@drawable/gradient_purplebutton"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSignUp"
@@ -58,5 +58,5 @@
         android:text="SIGN UP"
         android:textColor="@color/white"
         android:backgroundTint="@null"
-        android:background="@drawable/border_purple"/>
+        android:background="@drawable/border_white"/>
 </LinearLayout>
