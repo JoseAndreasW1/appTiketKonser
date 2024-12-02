@@ -1,7 +1,11 @@
 package com.example.apptiketkonser
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,17 +22,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-//        val intent = Intent(this, HomeActivity::class.java)
-//        startActivity(intent)\
-
-        val mFragmentManager = supportFragmentManager
-        val mfLogin = fLogin()
-
-        mFragmentManager.findFragmentByTag(fLogin::class.java.simpleName)
-        mFragmentManager
-            .beginTransaction()
-            .add(R.id.frameContainer, mfLogin, fLogin::class.java.simpleName)
-            .commit()
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+//
+//        val mFragmentManager = supportFragmentManager
+//        val mfLogin = fLogin()
+//
+//        mFragmentManager.findFragmentByTag(fLogin::class.java.simpleName)
+//        mFragmentManager
+//            .beginTransaction()
+//            .add(R.id.frameContainer, mfLogin, fLogin::class.java.simpleName)
+//            .commit()
 
     }
 }

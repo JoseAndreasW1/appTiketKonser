@@ -1,15 +1,27 @@
 package com.example.apptiketkonser
 
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Rect
+import android.graphics.Shader
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,15 +29,23 @@ import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 
 class HomeActivity : AppCompatActivity() {
-    private lateinit var _rvOnGoingConcert : RecyclerView
-    private lateinit var _rvUpComingConcert : RecyclerView
+    private lateinit var ongoingConcertViewPager: ViewPager2
+    private lateinit var upcomingConcertViewPager: ViewPager2
+
+    private lateinit var  viewPager2: ViewPager2
+    private lateinit var handler : Handler
+    private lateinit var adapter: CarouselAdapter
+    private lateinit var adapterOngoing: ConcertAdapter
+    private lateinit var adapterUpcoming: ConcertAdapter
+
 
     val db = Firebase.firestore
     var listOnGoingConcert = ArrayList<Concert>()
     var listUpComingConcert = ArrayList<Concert>()
-    val sdf = SimpleDateFormat("MMMM dd, yyyy HH:mm", Locale.ENGLISH)
+    val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +56,58 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        _rvOnGoingConcert = findViewById(R.id.rvOnGoingConcert)
-        _rvUpComingConcert = findViewById(R.id.rvUpComingConcert)
+        //Gradient logo VibeTix
+        val _tvGradient = findViewById<TextView>(R.id.tvGradient)
+        val paint = _tvGradient.paint
+        val width = paint.measureText(_tvGradient.text.toString())
+        val shader = LinearGradient(
+            0f, 0f, width, _tvGradient.textSize,
+            intArrayOf(
+                Color.parseColor("#980674"),
+                Color.parseColor("#7C3AED")
+            ),
+            null,
+            Shader.TileMode.CLAMP
+        )
+        paint.shader = shader
+        _tvGradient.invalidate()
 
         loadData()
-//        tampilkanData()
+
+        //view pager, artist
+        init()
+        setUpTransformer()
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                handler.removeCallbacks(runnable)
+                handler.postDelayed(runnable , 5000)
+            }
+        })
+
+        val _tabHome = findViewById<Button>(R.id.tabHome)
+        val _tabTickets = findViewById<Button>(R.id.tabTickets)
+
+        _tabTickets.setOnClickListener {
+            _tabHome.setBackgroundResource(android.R.color.transparent)
+            _tabHome.setTextColor(resources.getColor(R.color.black))
+            _tabTickets.setBackgroundResource(R.drawable.gradient_purplebutton)
+            _tabTickets.setTextColor(resources.getColor(R.color.white))
+        }
+
+        _tabHome.setOnClickListener {
+            _tabTickets.setBackgroundResource(android.R.color.transparent)
+            _tabTickets.setTextColor(resources.getColor(R.color.black))
+            _tabHome.setBackgroundResource(R.drawable.gradient_purplebutton)
+            _tabHome.setTextColor(resources.getColor(R.color.white))
+        }
+
+
+
+
+
+
     }
 
     fun readData(db: FirebaseFirestore, onComplete: () -> Unit) {
@@ -87,36 +153,150 @@ class HomeActivity : AppCompatActivity() {
     }
 
     fun loadData(){
+        ongoingConcertViewPager = findViewById(R.id.viewPagerOnGoingConcert)
+        upcomingConcertViewPager = findViewById(R.id.viewPagerUpComingConcert)
         readData(db){
-            tampilkanData()
+
+            adapterOngoing = ConcertAdapter(listOnGoingConcert,ongoingConcertViewPager)
+            adapterUpcoming = ConcertAdapter(listUpComingConcert,upcomingConcertViewPager)
+
+            ongoingConcertViewPager.adapter = adapterOngoing
+            upcomingConcertViewPager.adapter = adapterUpcoming
+
+            ongoingConcertViewPager.setCurrentItem(1, false)
+            upcomingConcertViewPager.setCurrentItem(1, false)
+
+            ongoingConcertViewPager.offscreenPageLimit = 3
+            upcomingConcertViewPager.offscreenPageLimit = 3
+
+            ongoingConcertViewPager.clipToPadding = false
+            upcomingConcertViewPager.clipToPadding = false
+
+            ongoingConcertViewPager.clipChildren = false
+            upcomingConcertViewPager.clipChildren = false
+
+            ongoingConcertViewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            upcomingConcertViewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
 
             val _tvNoOngoingConcert = findViewById<TextView>(R.id.tvNoOngoingConcert)
             val _tvNoUpComingConcert = findViewById<TextView>(R.id.tvNoUpComingConcert)
 
+            ongoingConcertViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                    adapterOngoing.notifyDataSetChanged()
+//                    if (state == ViewPager2.SCROLL_STATE_IDLE) {
+//                        val itemCount = adapter.itemCount
+//                        when (viewPager2.currentItem) {
+//                            0 -> viewPager2.setCurrentItem(itemCount - 2, false) // Jump to the last real item
+//                            itemCount - 1 -> viewPager2.setCurrentItem(1, false) // Jump to the first real item
+//                        }
+//                    }
+                }
+            })
+            upcomingConcertViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                    adapterUpcoming.notifyDataSetChanged()
+//                    if (state == ViewPager2.SCROLL_STATE_IDLE) {
+//                        val itemCount = adapter.itemCount
+//                        when (viewPager2.currentItem) {
+//                            0 -> viewPager2.setCurrentItem(itemCount - 2, false) // Jump to the last real item
+//                            itemCount - 1 -> viewPager2.setCurrentItem(1, false) // Jump to the first real item
+//                        }
+//                    }
+                }
+            })
+
+
             //Jika Concert empty
             if(listOnGoingConcert.isEmpty()){
-                _rvOnGoingConcert.visibility = View.GONE
+                ongoingConcertViewPager.visibility = View.GONE
                 _tvNoOngoingConcert.visibility = View.VISIBLE
             } else {
-                _rvOnGoingConcert.visibility = View.VISIBLE
+                ongoingConcertViewPager.visibility = View.VISIBLE
                 _tvNoOngoingConcert.visibility = View.GONE
             }
             if(listUpComingConcert.isEmpty()){
-                _rvUpComingConcert.visibility = View.GONE
+                upcomingConcertViewPager.visibility = View.GONE
                 _tvNoUpComingConcert.visibility = View.VISIBLE
             } else {
-                _rvUpComingConcert.visibility = View.VISIBLE
+                upcomingConcertViewPager.visibility = View.VISIBLE
                 _tvNoUpComingConcert.visibility = View.GONE
             }
         }
     }
 
-    fun tampilkanData(){
-        _rvOnGoingConcert.layoutManager = LinearLayoutManager(this)
-        _rvUpComingConcert.layoutManager = LinearLayoutManager(this)
+    override fun onPause() {
+        super.onPause()
 
-        _rvOnGoingConcert.adapter = AdapterRecViewConcert(listOnGoingConcert)
-        _rvUpComingConcert.adapter = AdapterRecViewConcert(listUpComingConcert)
+        handler.removeCallbacks(runnable)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        handler.postDelayed(runnable , 5000)
+    }
+
+    private val runnable = Runnable {
+        viewPager2.currentItem = viewPager2.currentItem + 1
+    }
+
+    private fun setUpTransformer(){
+        val transformer = CompositePageTransformer()
+        transformer.addTransformer(MarginPageTransformer(40))
+//        transformer.addTransformer { page, position ->
+//            val scale = 0.85f + (1 - abs(position)) * 0.15f
+//            page.scaleY = scale
+//            page.scaleX = scale
+//        }
+        viewPager2.setPageTransformer(transformer)
+        ongoingConcertViewPager.setPageTransformer(transformer)
+        upcomingConcertViewPager.setPageTransformer(transformer)
+
+    }
+
+    // Apply the transformer to all ViewPagers
+
+    private fun init(){
+        viewPager2 = findViewById(R.id.carouselViewPager)
+        handler = Handler(Looper.myLooper()!!)
+        val itemList = listOf(
+            Pair(R.drawable.artist1, "Billie Eilish"),
+            Pair(R.drawable.artist2, "Bruno Mars"),
+            Pair(R.drawable.artist3, "Taylor Swift"),
+            Pair(R.drawable.artist4, "Afgan"),
+            Pair(R.drawable.artist5, "Tiara Andini")
+        )
+
+        adapter = CarouselAdapter(itemList, viewPager2)
+        viewPager2.adapter = adapter
+        viewPager2.setCurrentItem(1, false)
+        viewPager2.offscreenPageLimit = 3
+        viewPager2.clipToPadding = false
+        viewPager2.clipChildren = false
+        viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+
+                super.onPageScrollStateChanged(state)
+                adapter.notifyDataSetChanged()
+                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                    val itemCount = adapter.itemCount
+                    when (viewPager2.currentItem) {
+                        0 -> viewPager2.setCurrentItem(itemCount - 2, false)
+                        itemCount - 1 -> viewPager2.setCurrentItem(1, false)
+                    }
+                }
+            }
+        })
+
+
+
+
+
+    }
 }
+
