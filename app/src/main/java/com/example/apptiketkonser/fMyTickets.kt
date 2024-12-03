@@ -47,13 +47,13 @@ class fMyTickets : Fragment() {
                 for (document in result) {
                     Log.d("test", document.data.toString())
                     val purchaseDate = document.data["PurchaseDate"] as Timestamp
-                    val formattedStartConcertDate = sdf.format(purchaseDate.toDate())
+                    val formattedPurchaseDate = sdf.format(purchaseDate.toDate())
 
                     val transaction = Transaction(
                         1,
                         document.data["UserID"].toString().toInt(),
                         document.data["ConcertID"].toString().toInt(),
-                        formattedStartConcertDate
+                        formattedPurchaseDate
                     )
                     transactionList.add(transaction)
                     transactionList.add(transaction)

@@ -1,5 +1,6 @@
 package com.example.apptiketkonser
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
@@ -35,7 +35,7 @@ class fListConcert : Fragment() {
     val db = Firebase.firestore
     var listOnGoingConcert = ArrayList<Concert>()
     var listUpComingConcert = ArrayList<Concert>()
-    val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+    val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", Locale.ENGLISH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,9 +109,25 @@ class fListConcert : Fragment() {
         ongoingConcertViewPager = view.findViewById(R.id.viewPagerOnGoingConcert)
         upcomingConcertViewPager = view.findViewById(R.id.viewPagerUpComingConcert)
         readData(db){
-
             adapterOngoing = ConcertAdapter(listOnGoingConcert,ongoingConcertViewPager)
+            adapterOngoing.setOnItemClickCallback(object : ConcertAdapter.OnItemClickCallback {
+                override fun seeDetail(position: Int) {
+                    val concert = listOnGoingConcert[position]
+                    val intent = Intent(activity, DetailConcertActivity::class.java)
+                    DetailConcertActivity.concert = concert
+                    startActivity(intent)
+                }
+            })
+
             adapterUpcoming = ConcertAdapter(listUpComingConcert,upcomingConcertViewPager)
+            adapterUpcoming.setOnItemClickCallback(object : ConcertAdapter.OnItemClickCallback {
+                override fun seeDetail(position: Int) {
+                    val concert = listUpComingConcert[position]
+                    val intent = Intent(activity, DetailConcertActivity::class.java)
+                    DetailConcertActivity.concert = concert
+                    startActivity(intent)
+                }
+            })
 
             ongoingConcertViewPager.adapter = adapterOngoing
             upcomingConcertViewPager.adapter = adapterUpcoming
