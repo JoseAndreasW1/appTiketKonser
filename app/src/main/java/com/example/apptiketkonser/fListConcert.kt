@@ -116,8 +116,8 @@ class fListConcert : Fragment() {
             ongoingConcertViewPager.adapter = adapterOngoing
             upcomingConcertViewPager.adapter = adapterUpcoming
 
-            ongoingConcertViewPager.setCurrentItem(1, false)
-            upcomingConcertViewPager.setCurrentItem(1, false)
+            ongoingConcertViewPager.setCurrentItem(0, false)
+            upcomingConcertViewPager.setCurrentItem(0, false)
 
             ongoingConcertViewPager.offscreenPageLimit = 3
             upcomingConcertViewPager.offscreenPageLimit = 3

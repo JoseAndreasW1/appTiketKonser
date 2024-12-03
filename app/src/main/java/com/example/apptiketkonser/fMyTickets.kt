@@ -1,59 +1,69 @@
 package com.example.apptiketkonser
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.firestore
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [fMyTickets.newInstance] factory method to
- * create an instance of this fragment.
- */
 class fMyTickets : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", Locale.ENGLISH)
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: MyTicketAdapter
+    private val transactionList = mutableListOf<Transaction>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_f_my_tickets, container, false)
+        val view = inflater.inflate(R.layout.fragment_f_my_tickets, container, false)
+
+        recyclerView = view.findViewById(R.id.recyclerViewMyTickets)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        adapter = MyTicketAdapter(transactionList)
+        recyclerView.adapter = adapter
+
+        fetchTransactions()
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment fMyTickets.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            fMyTickets().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun fetchTransactions() {
+        val db = Firebase.firestore
+        db.collection("tbTransaction")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    Log.d("test", document.data.toString())
+                    val purchaseDate = document.data["PurchaseDate"] as Timestamp
+                    val formattedStartConcertDate = sdf.format(purchaseDate.toDate())
+
+                    val transaction = Transaction(
+                        1,
+                        document.data["UserID"].toString().toInt(),
+                        document.data["ConcertID"].toString().toInt(),
+                        formattedStartConcertDate
+                    )
+                    transactionList.add(transaction)
+                    transactionList.add(transaction)
+                    transactionList.add(transaction)
+                    transactionList.add(transaction)
                 }
+                adapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { exception ->
+                Log.d("error",exception.toString())
             }
     }
 }
