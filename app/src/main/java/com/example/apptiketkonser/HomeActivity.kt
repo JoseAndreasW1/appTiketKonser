@@ -87,5 +87,9 @@ class HomeActivity : AppCompatActivity() {
             .add(R.id.frameContainer, mfListConcert, fListConcert::class.java.simpleName)
             .commit()
     }
+
+    companion object {
+        var idUser: String? = null
+    }
 }
 

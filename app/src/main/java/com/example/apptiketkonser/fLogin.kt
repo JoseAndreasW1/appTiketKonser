@@ -89,6 +89,7 @@ class fLogin : Fragment() {
                     } else {
                         //Login berhasil
                         Toast.makeText(activity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                        HomeActivity.idUser = querySnapshot.documents[0].id
                         val intent = Intent(activity, HomeActivity::class.java)
                         startActivity(intent)
                     }

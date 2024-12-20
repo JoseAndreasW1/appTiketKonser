@@ -75,7 +75,7 @@ class fListConcert : Fragment() {
                     val formattedEndPreOrderDate = sdf.format(endPreOrderDate.toDate())
                     val formattedStartConcertDate = sdf.format(startConcertDate.toDate())
                     val concert = Concert(
-                        1,
+                        document.id,
                         document.data["Name"].toString(),
                         formattedStartPreOrderDate,
                         formattedEndPreOrderDate,

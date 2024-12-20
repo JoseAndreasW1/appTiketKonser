@@ -1,8 +1,7 @@
 package com.example.apptiketkonser
 
 data class Transaction(
-    var id: Int,
-    var userId: Int,
-    var concertId: Int,
+    var userId: String,
+    var concertId: String,
     var transactionDate: String
 )

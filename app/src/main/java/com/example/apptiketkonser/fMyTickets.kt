@@ -41,7 +41,9 @@ class fMyTickets : Fragment() {
 
     private fun fetchTransactions() {
         val db = Firebase.firestore
-        db.collection("tbTransaction")
+        db.collection("tbUser")
+            .document(HomeActivity.idUser!!)
+            .collection("tbTransaction")
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
@@ -50,9 +52,8 @@ class fMyTickets : Fragment() {
                     val formattedPurchaseDate = sdf.format(purchaseDate.toDate())
 
                     val transaction = Transaction(
-                        1,
-                        document.data["UserID"].toString().toInt(),
-                        document.data["ConcertID"].toString().toInt(),
+                        HomeActivity.idUser!!,
+                        document.id,
                         formattedPurchaseDate
                     )
                     transactionList.add(transaction)

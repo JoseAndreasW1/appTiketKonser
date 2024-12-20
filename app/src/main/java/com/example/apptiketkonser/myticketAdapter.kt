@@ -41,12 +41,12 @@ class MyTicketAdapter(
 
     override fun onBindViewHolder(holder: MyTicketViewHolder, position: Int) {
         val transaction = transactionList[position]
-        holder.transactionDate.text = transaction.transactionDate // Example: format date if needed
+        holder.transactionDate.text = transaction.transactionDate
 
         // Query tbconcert table to get concert details
         val db = Firebase.firestore
         db.collection("tbConcert")
-            .document(transaction.concertId.toString())
+            .document(transaction.concertId)
             .get()
             .addOnSuccessListener { document ->
                     val concertName = document.data?.get("Name").toString()

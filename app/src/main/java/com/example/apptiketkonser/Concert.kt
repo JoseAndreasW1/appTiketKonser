@@ -1,7 +1,7 @@
 package com.example.apptiketkonser
 
 data class Concert(
-    var id: Int,
+    var id: String,
     var name: String,
     var startPreOrderDate: String,
     var endPreOrderDate: String,
