@@ -57,9 +57,6 @@ class fMyTickets : Fragment() {
                         formattedPurchaseDate
                     )
                     transactionList.add(transaction)
-                    transactionList.add(transaction)
-                    transactionList.add(transaction)
-                    transactionList.add(transaction)
                 }
                 adapter.notifyDataSetChanged()
             }

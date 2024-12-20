@@ -1,5 +1,6 @@
 package com.example.apptiketkonser
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
@@ -40,6 +41,15 @@ class HomeActivity : AppCompatActivity() {
 
         val _tabHome = findViewById<Button>(R.id.tabHome)
         val _tabTickets = findViewById<Button>(R.id.tabTickets)
+
+        val _btnSignOut = findViewById<Button>(R.id.btnSignOut)
+
+        _btnSignOut.setOnClickListener {
+            HomeActivity.idUser = null
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         _tabTickets.setOnClickListener {
             _tabHome.setBackgroundResource(android.R.color.transparent)
