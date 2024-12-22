@@ -1,7 +1,10 @@
 package com.example.apptiketkonser
 
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.gson.Gson
 import java.security.MessageDigest
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,6 +29,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class fLogin : Fragment() {
     val db = Firebase.firestore
+    lateinit var sp : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +37,19 @@ class fLogin : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
+        val user = sp.getString("user", null)
+
+        if (user != null) {
+            db.collection("tbUser")
+                .document(user)
+                .get()
+                .addOnSuccessListener { query ->
+                    if (query != null) {
+                        startActivity(Intent(activity, HomeActivity::class.java))
+                    }
+                }
+        }
 
         val _etEmail = view.findViewById<EditText>(R.id.etEmail)
         val _etPassword = view.findViewById<EditText>(R.id.etPassword)
@@ -90,6 +108,15 @@ class fLogin : Fragment() {
                         //Login berhasil
                         Toast.makeText(activity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                         HomeActivity.idUser = querySnapshot.documents[0].id
+
+                        // Simpan data di shared preferences
+                        sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
+                        val editor = sp.edit()
+                        if (editor != null) {
+                            editor.putString("user", querySnapshot.documents[0].id)
+                            editor.apply()
+                        }
+
                         val intent = Intent(activity, HomeActivity::class.java)
                         startActivity(intent)
                     }
