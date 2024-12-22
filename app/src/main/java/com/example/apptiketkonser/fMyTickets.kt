@@ -1,5 +1,6 @@
 package com.example.apptiketkonser
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -41,27 +42,31 @@ class fMyTickets : Fragment() {
 
     private fun fetchTransactions() {
         val db = Firebase.firestore
-        db.collection("tbUser")
-            .document(HomeActivity.idUser!!)
-            .collection("tbTransaction")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d("test", document.data.toString())
-                    val purchaseDate = document.data["PurchaseDate"] as Timestamp
-                    val formattedPurchaseDate = sdf.format(purchaseDate.toDate())
+        val sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
+        val user = sp.getString("user", null)
+        if (user != null) {
+            db.collection("tbUser")
+                .document(user)
+                .collection("tbTransaction")
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        Log.d("test", document.data.toString())
+                        val purchaseDate = document.data["PurchaseDate"] as Timestamp
+                        val formattedPurchaseDate = sdf.format(purchaseDate.toDate())
 
-                    val transaction = Transaction(
-                        HomeActivity.idUser!!,
-                        document.id,
-                        formattedPurchaseDate
-                    )
-                    transactionList.add(transaction)
+                        val transaction = Transaction(
+                            HomeActivity.idUser!!,
+                            document.id,
+                            formattedPurchaseDate
+                        )
+                        transactionList.add(transaction)
+                    }
+                    adapter.notifyDataSetChanged()
                 }
-                adapter.notifyDataSetChanged()
-            }
-            .addOnFailureListener { exception ->
-                Log.d("error",exception.toString())
-            }
+                .addOnFailureListener { exception ->
+                    Log.d("error", exception.toString())
+                }
+        }
     }
 }
