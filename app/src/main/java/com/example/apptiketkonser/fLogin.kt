@@ -37,6 +37,8 @@ class fLogin : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Check kalo user udh disimpan di shared preferences, klo udh lgsg msk home
         sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
         val user = sp.getString("user", null)
 
@@ -46,6 +48,7 @@ class fLogin : Fragment() {
                 .get()
                 .addOnSuccessListener { query ->
                     if (query != null) {
+                        HomeActivity.idUser = user
                         startActivity(Intent(activity, HomeActivity::class.java))
                     }
                 }

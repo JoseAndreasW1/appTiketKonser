@@ -46,6 +46,13 @@ class HomeActivity : AppCompatActivity() {
 
         _btnSignOut.setOnClickListener {
             HomeActivity.idUser = null
+            val sp = getSharedPreferences("user", MODE_PRIVATE)
+            val editor = sp.edit()
+
+            if (editor != null) {
+                editor.clear()
+                editor.apply()
+            }
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
