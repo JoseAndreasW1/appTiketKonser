@@ -1,5 +1,6 @@
 package com.example.apptiketkonser
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -11,13 +12,18 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.firestore
 import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -92,7 +98,14 @@ class DetailConcertActivity : AppCompatActivity() {
                 rs.destroy()
             }
         }
-
+        // get user data
+        val user = getSharedPreferences("user", MODE_PRIVATE).getString("user", null)
+        val db = Firebase.firestore
+        var tbUser: DocumentReference? = null
+        if (user != null) {
+            tbUser = db.collection("tbUser")
+                .document(user)
+        }
 
         _tvName.text = concert?.name
         _tvDescription.text = concert?.description
@@ -100,28 +113,88 @@ class DetailConcertActivity : AppCompatActivity() {
         _tvStartPreOrderDate.text = concert?.startPreOrderDate
         _tvEndPreOrderDate.text = concert?.endPreOrderDate
         _tvStartConcertDate.text = concert?.startConcertDate
-        _tvPrice.text = "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(concert?.price)
-        _tvPrice2.text = "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(concert?.price)
+        _tvPrice.text =
+            "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(concert?.price)
+        _tvPrice2.text =
+            "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(concert?.price)
         //Tolong set Saldo di sini
-        //_tvSaldo.text = "Saldo: Rp. "
+        if (tbUser != null) {
+            tbUser.get().addOnSuccessListener { query ->
+                _tvSaldo.text = "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(query.get("saldo").toString().toInt())
+            }
+        }
         _tvNumberOfTickets.text = concert?.numberOfTickets.toString()
 
         //Hide button jika preorder belum dimulai
-        //Kalau sudah pernah beli, dihide juga
         val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", Locale.ENGLISH)
         val parsedDate = sdf.parse(concert?.startPreOrderDate!!)
-        if(parsedDate!!.after(Date())){
+
+
+        if (parsedDate!!.after(Date())) {
             _btnBuyTicket.visibility = Button.GONE
+        } else {
+            // Check if user already bought the ticket
+            if (tbUser != null) {
+                tbUser
+                    .collection("tbTransaction")
+                    .get()
+                    .addOnSuccessListener { query ->
+                        for (transaction in query.documents) {
+                            Log.i("DataTransaction", (transaction.id == concert!!.id).toString())
+                            if (concert != null) {
+                                if (transaction.id == concert!!.id) {
+                                    _btnBuyTicket.visibility = Button.GONE
+                                }
+                            }
+                        }
+                    }
+            }
         }
 
+        _btnBuyTicket.setOnClickListener {
+            if (user != null) {
+                db.runTransaction { transaction ->
+                    if (tbUser != null) {
+                        val dataUser = transaction.get(tbUser)
+                        if (!dataUser.exists())
+                            throw Exception("User doesn't exist, please try again later")
 
+                        val currentSaldo = dataUser.get("saldo")
+                        if (currentSaldo.toString().toInt() < concert!!.price)
+                            throw Exception("Saldo tidak cukup")
 
+                        transaction.update(
+                            tbUser,
+                            "saldo",
+                            currentSaldo.toString().toInt() - concert!!.price
+                        )
 
+                        val tbTransaction =
+                            tbUser.collection("tbTransaction").document(concert!!.id)
+                        val purchaseDate = hashMapOf("PurchaseDate" to Date())
+
+                        transaction.set(tbTransaction, purchaseDate)
+                    } else {
+                        throw Exception("User table not found")
+                    }
+                }
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Berhasil membeli tiket", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, HomeActivity::class.java))
+                        finish()
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(
+                            this,
+                            "Something went wrong, please try again later ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+        }
     }
 
-
-
     companion object {
-        var concert : Concert? = null
+        var concert: Concert? = null
     }
 }
