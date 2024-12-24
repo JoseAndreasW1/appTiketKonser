@@ -56,7 +56,7 @@ class fMyTickets : Fragment() {
                         val formattedPurchaseDate = sdf.format(purchaseDate.toDate())
 
                         val transaction = Transaction(
-                            HomeActivity.idUser!!,
+                            user,
                             document.id,
                             formattedPurchaseDate
                         )

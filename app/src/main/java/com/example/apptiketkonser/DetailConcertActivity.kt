@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.firestore
 import com.squareup.picasso.Picasso
@@ -169,6 +170,9 @@ class DetailConcertActivity : AppCompatActivity() {
                         if (currentSaldo.toString().toInt() < concert!!.price)
                             throw Exception("Saldo tidak cukup")
 
+                        val tbConcert = db.collection("tbConcert").document(concert!!.id)
+                        val totalTicket = transaction.get(tbConcert).get("NumberOfTickets") as Long
+
                         transaction.update(
                             tbUser,
                             "saldo",
@@ -180,16 +184,51 @@ class DetailConcertActivity : AppCompatActivity() {
                         val purchaseDate = hashMapOf("PurchaseDate" to Date())
 
                         transaction.set(tbTransaction, purchaseDate)
+                        transaction.update(tbConcert, "NumberOfTickets", totalTicket - 1)
                     } else {
                         throw Exception("User table not found")
                     }
                 }
                     .addOnSuccessListener {
+                        // set alarm
+                        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy hh:mm", Locale.ENGLISH)
+                        val intent = Intent(this, NotificationReceiver::class.java).apply {
+                            putExtra("title", "Concert reminder")
+                            putExtra(
+                                "message", "You have a ${concert?.name} concert on ${
+                                    concert!!.startConcertDate
+                                }"
+                            )
+                            putExtra("concert_id", concert?.id)
+                        }
+                        val pendingIntent = PendingIntent.getBroadcast(
+                            this,
+                            concert?.id.hashCode(),
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                        )
+                        // cancel if the alarm exists
+                        alarmManager.cancel(pendingIntent)
+                        val timer = 120000
+                        Log.i("DataTimer", timer.toString())
+                        // testing 2 mnt dri skrg
+//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timer, pendingIntent)
+
+                        // set time 2 hours prior
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            sdf.parse(concert!!.startConcertDate).time - (2 * 60 * 60 * 1000),
+                            pendingIntent
+                        )
+
+                        // success message
                         Toast.makeText(this, "Berhasil membeli tiket", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     }
                     .addOnFailureListener { exception ->
+                        Log.i("ErrorTicket", exception.message.toString())
                         Toast.makeText(
                             this,
                             "Something went wrong, please try again later ${exception.message}",
