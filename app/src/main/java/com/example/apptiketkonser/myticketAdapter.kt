@@ -28,7 +28,7 @@ class MyTicketAdapter(
     private val transactionList: List<Transaction>
 
 ) : RecyclerView.Adapter<MyTicketAdapter.MyTicketViewHolder>() {
-    val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", Locale.ENGLISH)
+    val sdf = SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH)
 
     class MyTicketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val poster: ImageView = itemView.findViewById(R.id.poster)
@@ -38,7 +38,7 @@ class MyTicketAdapter(
         val transactionDate: TextView = itemView.findViewById(R.id.purchaseDate)
         val concertVenue :TextView = itemView.findViewById(R.id.concertVenue)
 
-        val _btnDetail = itemView.findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btnDetail)
+        val _btnDetail = itemView.findViewById<ImageView>(R.id.btnDetail)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyTicketViewHolder {

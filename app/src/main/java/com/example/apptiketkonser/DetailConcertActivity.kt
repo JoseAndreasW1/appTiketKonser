@@ -13,6 +13,7 @@ import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -35,6 +36,9 @@ class DetailConcertActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_detail_concert)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:background="@drawable/wallpaper">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -28,8 +29,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:paddingVertical="16dp"
-                android:paddingHorizontal="32dp"
-                android:background="#CC000000"
+                android:paddingHorizontal="16dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -95,9 +95,9 @@
                     android:id="@+id/tvGradient"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
                     android:text="Ready to Jam to The Music?"
-                    android:textSize="18dp"
+                    android:textSize="22dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

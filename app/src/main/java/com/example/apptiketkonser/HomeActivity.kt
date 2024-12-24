@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +17,11 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        //fullscreen
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_home)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
