@@ -1,13 +1,10 @@
 package com.example.apptiketkonser
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
@@ -15,13 +12,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.Firebase
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.firestore
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,10 +108,6 @@ class HomeActivity : AppCompatActivity() {
             .beginTransaction()
             .add(R.id.frameContainer, mfListConcert, fListConcert::class.java.simpleName)
             .commit()
-    }
-
-    companion object {
-        var idUser: String? = null
     }
 }
 

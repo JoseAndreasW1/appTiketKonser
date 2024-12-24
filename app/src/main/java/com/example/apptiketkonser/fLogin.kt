@@ -48,7 +48,6 @@ class fLogin : Fragment() {
                 .get()
                 .addOnSuccessListener { query ->
                     if (query != null) {
-                        HomeActivity.idUser = user
                         startActivity(Intent(activity, HomeActivity::class.java))
                     }
                 }
@@ -110,7 +109,6 @@ class fLogin : Fragment() {
                     } else {
                         //Login berhasil
                         Toast.makeText(activity, "Login Berhasil!", Toast.LENGTH_SHORT).show()
-                        HomeActivity.idUser = querySnapshot.documents[0].id
 
                         // Simpan data di shared preferences
                         sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
