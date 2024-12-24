@@ -1,16 +1,26 @@
 package com.example.apptiketkonser
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.firestore
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +31,48 @@ class HomeActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+        val user = getSharedPreferences("user", MODE_PRIVATE).getString("user", null)
+        val db = Firebase.firestore
+        var tbUser: DocumentReference? = null
+
+        // Set notification alarm
+        if (user != null) {
+            db.collection("tbUser")
+                .document(user)
+                .collection("tbTransaction")
+                .get()
+                .addOnSuccessListener { query ->
+                    for ((index, transaction) in query.withIndex()) {
+                        db.collection("tbConcert").document(transaction.id).get().addOnSuccessListener { concert ->
+                            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                            val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy hh:mm a", Locale.ENGLISH)
+                            val concertDate = concert.get("StartConcertDate") as Timestamp
+                            val intent = Intent(this, NotificationReceiver::class.java).apply {
+                                putExtra("title", "Concert reminder")
+                                putExtra("message", "You have a ${concert.get("Name")} concert at ${
+                                    sdf.format(concertDate.toDate())
+                                }")
+                                putExtra("concert_id", concert.id)
+                            }
+                            val pendingIntent = PendingIntent.getBroadcast(
+                                this,
+                                concert.id.hashCode(),
+                                intent,
+                                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                            )
+                            // cancel if the alarm exists
+                            alarmManager.cancel(pendingIntent)
+                            val timer = 120000
+                            Log.i("DataTimer", timer.toString())
+                            // testing 2 mnt dri skrg
+//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timer, pendingIntent)
+
+                            // set time 2 hours prior
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, concertDate.toDate().time - (2 * 60 * 60 * 1000), pendingIntent)
+                        }
+                    }
+                }
         }
 
         //Gradient logo VibeTix
