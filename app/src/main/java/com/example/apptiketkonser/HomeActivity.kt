@@ -8,6 +8,7 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -19,19 +20,24 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        //fullscreen
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_home)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         val user = getSharedPreferences("user", MODE_PRIVATE).getString("user", null)
         val db = Firebase.firestore
         var tbUser: DocumentReference? = null
@@ -97,7 +103,6 @@ class HomeActivity : AppCompatActivity() {
         val _btnSignOut = findViewById<Button>(R.id.btnSignOut)
 
         _btnSignOut.setOnClickListener {
-            HomeActivity.idUser = null
             val sp = getSharedPreferences("user", MODE_PRIVATE)
             val editor = sp.edit()
 
