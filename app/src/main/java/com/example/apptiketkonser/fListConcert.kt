@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -23,8 +24,8 @@ import java.util.Date
 import java.util.Locale
 
 class fListConcert : Fragment() {
-    private lateinit var ongoingConcertViewPager: ViewPager2
-    private lateinit var upcomingConcertViewPager: ViewPager2
+    private lateinit var ongoingConcert: RecyclerView
+    private lateinit var upcomingConcert: RecyclerView
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var handler : Handler
@@ -39,7 +40,6 @@ class fListConcert : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,10 +106,10 @@ class fListConcert : Fragment() {
 
     fun loadData(){
         val view = requireView()
-        ongoingConcertViewPager = view.findViewById(R.id.viewPagerOnGoingConcert)
-        upcomingConcertViewPager = view.findViewById(R.id.viewPagerUpComingConcert)
+        ongoingConcert = view.findViewById(R.id.rvOngoing)
+        upcomingConcert = view.findViewById(R.id.rvUpcoming)
         readData(db){
-            adapterOngoing = ConcertAdapter(listOnGoingConcert,ongoingConcertViewPager)
+            adapterOngoing = ConcertAdapter(listOnGoingConcert,ongoingConcert)
             adapterOngoing.setOnItemClickCallback(object : ConcertAdapter.OnItemClickCallback {
                 override fun seeDetail(position: Int) {
                     val concert = listOnGoingConcert[position]
@@ -119,7 +119,7 @@ class fListConcert : Fragment() {
                 }
             })
 
-            adapterUpcoming = ConcertAdapter(listUpComingConcert,upcomingConcertViewPager)
+            adapterUpcoming = ConcertAdapter(listUpComingConcert,upcomingConcert)
             adapterUpcoming.setOnItemClickCallback(object : ConcertAdapter.OnItemClickCallback {
                 override fun seeDetail(position: Int) {
                     val concert = listUpComingConcert[position]
@@ -129,68 +129,28 @@ class fListConcert : Fragment() {
                 }
             })
 
-            ongoingConcertViewPager.adapter = adapterOngoing
-            upcomingConcertViewPager.adapter = adapterUpcoming
+            ongoingConcert.adapter = adapterOngoing
+            upcomingConcert.adapter = adapterUpcoming
 
-            ongoingConcertViewPager.setCurrentItem(0, false)
-            upcomingConcertViewPager.setCurrentItem(0, false)
-
-            ongoingConcertViewPager.offscreenPageLimit = 3
-            upcomingConcertViewPager.offscreenPageLimit = 3
-
-            ongoingConcertViewPager.clipToPadding = false
-            upcomingConcertViewPager.clipToPadding = false
-
-            ongoingConcertViewPager.clipChildren = false
-            upcomingConcertViewPager.clipChildren = false
-
-            ongoingConcertViewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            upcomingConcertViewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            ongoingConcert.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            upcomingConcert.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
             val _tvNoOngoingConcert = view.findViewById<TextView>(R.id.tvNoOngoingConcert)
             val _tvNoUpComingConcert = view.findViewById<TextView>(R.id.tvNoUpComingConcert)
 
-            ongoingConcertViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageScrollStateChanged(state: Int) {
-                    super.onPageScrollStateChanged(state)
-                    adapterOngoing.notifyDataSetChanged()
-//                    if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                        val itemCount = adapter.itemCount
-//                        when (viewPager2.currentItem) {
-//                            0 -> viewPager2.setCurrentItem(itemCount - 2, false) // Jump to the last real item
-//                            itemCount - 1 -> viewPager2.setCurrentItem(1, false) // Jump to the first real item
-//                        }
-//                    }
-                }
-            })
-            upcomingConcertViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageScrollStateChanged(state: Int) {
-                    super.onPageScrollStateChanged(state)
-                    adapterUpcoming.notifyDataSetChanged()
-//                    if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                        val itemCount = adapter.itemCount
-//                        when (viewPager2.currentItem) {
-//                            0 -> viewPager2.setCurrentItem(itemCount - 2, false) // Jump to the last real item
-//                            itemCount - 1 -> viewPager2.setCurrentItem(1, false) // Jump to the first real item
-//                        }
-//                    }
-                }
-            })
-
-
             //Jika Concert empty
             if(listOnGoingConcert.isEmpty()){
-                ongoingConcertViewPager.visibility = View.GONE
+                ongoingConcert.visibility = View.GONE
                 _tvNoOngoingConcert.visibility = View.VISIBLE
             } else {
-                ongoingConcertViewPager.visibility = View.VISIBLE
+                ongoingConcert.visibility = View.VISIBLE
                 _tvNoOngoingConcert.visibility = View.GONE
             }
             if(listUpComingConcert.isEmpty()){
-                upcomingConcertViewPager.visibility = View.GONE
+                upcomingConcert.visibility = View.GONE
                 _tvNoUpComingConcert.visibility = View.VISIBLE
             } else {
-                upcomingConcertViewPager.visibility = View.VISIBLE
+                upcomingConcert.visibility = View.VISIBLE
                 _tvNoUpComingConcert.visibility = View.GONE
             }
         }
@@ -215,18 +175,8 @@ class fListConcert : Fragment() {
     private fun setUpTransformer(){
         val transformer = CompositePageTransformer()
         transformer.addTransformer(MarginPageTransformer(40))
-//        transformer.addTransformer { page, position ->
-//            val scale = 0.85f + (1 - abs(position)) * 0.15f
-//            page.scaleY = scale
-//            page.scaleX = scale
-//        }
         viewPager2.setPageTransformer(transformer)
-        ongoingConcertViewPager.setPageTransformer(transformer)
-        upcomingConcertViewPager.setPageTransformer(transformer)
-
     }
-
-    // Apply the transformer to all ViewPagers
 
     private fun init(){
         val view = requireView()

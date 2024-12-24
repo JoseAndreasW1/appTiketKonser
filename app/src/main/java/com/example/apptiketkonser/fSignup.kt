@@ -68,7 +68,7 @@ class fSignup : Fragment() {
     fun registerUser(email: String, password: String, name: String){
         db.collection("tbUser")
             //Cek email unik atau tidak
-            .whereEqualTo("Email", email)
+            .whereEqualTo("email", email)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {

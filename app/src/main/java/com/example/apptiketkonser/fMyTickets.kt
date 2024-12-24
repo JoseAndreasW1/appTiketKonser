@@ -17,7 +17,7 @@ import java.util.Locale
 
 class fMyTickets : Fragment() {
 
-    val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", Locale.ENGLISH)
+    val sdf = SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH)
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MyTicketAdapter
     private val transactionList = mutableListOf<Transaction>()

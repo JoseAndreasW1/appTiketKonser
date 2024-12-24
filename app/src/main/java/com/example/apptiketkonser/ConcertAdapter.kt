@@ -1,6 +1,7 @@
 package com.example.apptiketkonser
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -13,12 +14,11 @@ import com.google.firebase.Timestamp
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Locale
-
 class ConcertAdapter(private val items: List<Concert>, // List of Concerts
-                            private val viewPager2: ViewPager2
+                     private val recyclerView: RecyclerView
 ) : RecyclerView.Adapter<ConcertAdapter.ConcertViewHolder>() {
 
-    private lateinit var onItemClickCallback : OnItemClickCallback
+    private lateinit var onItemClickCallback: OnItemClickCallback
 
     interface OnItemClickCallback {
         fun seeDetail(position: Int)
@@ -30,7 +30,7 @@ class ConcertAdapter(private val items: List<Concert>, // List of Concerts
 
     class ConcertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.concertImage)
-        val textOverlay : LinearLayout = itemView.findViewById(R.id.textOverlay)
+        val textOverlay: LinearLayout = itemView.findViewById(R.id.textOverlay)
         val concertName: TextView = itemView.findViewById(R.id.concertName)
         val concertDate: TextView = itemView.findViewById(R.id.concertDate)
         val btnDetail = itemView.findViewById<Button>(R.id.btnDetail)
@@ -41,31 +41,6 @@ class ConcertAdapter(private val items: List<Concert>, // List of Concerts
             .inflate(R.layout.item_recycler_concert, parent, false) // Make sure this layout matches your design
         return ConcertViewHolder(view)
     }
-
-//    override fun onBindViewHolder(holder: ConcertViewHolder, position: Int) {
-//        val realPosition = when (position) {
-//            0 -> items.size - 1
-//            itemCount - 1 -> 0
-//            else -> position - 1
-//        }
-//        val concert = items[realPosition]
-//        holder.concertName.text = concert.name
-//        holder.concertDate.text = concert.startPreOrderDate
-//        Picasso.get()
-//            .load(concert.imageUrl)
-//            .into(holder.imageView)
-//
-//        val currentItem = viewPager2.currentItem
-//        if (realPosition == currentItem-1) {
-//            holder.textOverlay.visibility = View.VISIBLE
-//            holder.concertName.visibility = View.VISIBLE
-//
-//        } else {
-//            holder.textOverlay.visibility = View.GONE
-//            holder.concertName.visibility = View.GONE
-//
-//        }
-//    }
 
     override fun onBindViewHolder(holder: ConcertViewHolder, position: Int) {
         val concert = items[position] // Directly bind the position without adjustments
@@ -79,23 +54,29 @@ class ConcertAdapter(private val items: List<Concert>, // List of Concerts
             .load(concert.imageUrl)
             .into(holder.imageView)
 
-        // Optional: If you still want to highlight the current item
-        val currentItem = viewPager2.currentItem
-        if (position == currentItem) {
-            holder.textOverlay.visibility = View.VISIBLE
-            holder.concertName.visibility = View.VISIBLE
-        } else {
-            holder.textOverlay.visibility = View.GONE
-            holder.concertName.visibility = View.GONE
+        // Set initial visibility to GONE for textOverlay and concertName
+        holder.textOverlay.visibility = View.GONE
+        holder.concertName.visibility = View.GONE
+
+        // Toggle visibility of text when item is clicked
+        holder.itemView.setOnClickListener {
+            // Toggle visibility
+            if (holder.textOverlay.visibility == View.GONE) {
+                holder.textOverlay.visibility = View.VISIBLE
+                holder.concertName.visibility = View.VISIBLE
+            } else {
+                holder.textOverlay.visibility = View.GONE
+                holder.concertName.visibility = View.GONE
+            }
         }
 
+        // Set detail button click listener
         holder.btnDetail.setOnClickListener {
             onItemClickCallback.seeDetail(position)
         }
     }
 
     override fun getItemCount(): Int {
-        return items.size //+2 buat infinite loop
+        return items.size
     }
 }
-
