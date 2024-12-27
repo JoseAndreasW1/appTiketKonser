@@ -16,7 +16,6 @@
         android:layout_marginTop="20dp">
 
         <EditText
-            android:ellipsize="end"
             android:singleLine="true"
 
             android:id="@+id/etEmail"
@@ -47,7 +46,6 @@
         android:layout_marginTop="10dp">
 
         <EditText
-            android:ellipsize="end"
             android:singleLine="true"
 
             android:id="@+id/etName"
@@ -78,7 +76,6 @@
         android:layout_marginTop="10dp">
 
         <EditText
-            android:ellipsize="end"
             android:singleLine="true"
 
             android:id="@+id/etPassword"
@@ -110,7 +107,6 @@
         android:layout_marginTop="10dp">
 
         <EditText
-            android:ellipsize="end"
             android:singleLine="true"
             android:id="@+id/etConfirmPassword"
             android:layout_width="match_parent"

@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-//        val intent = Intent(this, HomeActivity::class.java)
-//        startActivity(intent)
+        //        val intent = Intent(this, HomeActivity::class.java)
+        //        startActivity(intent)
 
         //Ganti ke fragment login
         val mFragmentManager = supportFragmentManager

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
 class CarouselAdapter(
-    private val items: List<Pair<Int, String>>, // List of image resource and text
+    private val items: List<Pair<Int, String>>,
     private val viewPager2: ViewPager2
 ) : RecyclerView.Adapter<CarouselAdapter.ImageViewHolder>() {
 
@@ -24,18 +24,19 @@ class CarouselAdapter(
         return ImageViewHolder(view)
     }
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+        //untuk infinite scroll
         val realPosition = when (position) {
             0 -> items.size - 1
             itemCount - 1 -> 0
             else -> position - 1
         }
-
         val item = items[realPosition]
+
+        //initialize isi
         holder.imageView.setImageResource(item.first)
         holder.textOverlay.text = item.second
 
         val currentItem = viewPager2.currentItem
-
         if (realPosition == currentItem-1) {
             holder.textOverlay.visibility = View.VISIBLE
         } else {
@@ -43,6 +44,7 @@ class CarouselAdapter(
         }
     }
 
+    // +2, awal ada item paling belakang, akhir ada item paling depan
     override fun getItemCount(): Int {
         return items.size + 2
     }

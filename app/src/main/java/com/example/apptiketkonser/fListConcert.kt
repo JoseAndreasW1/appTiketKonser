@@ -30,12 +30,14 @@ class fListConcert : Fragment() {
     private lateinit var viewPager2: ViewPager2
     private lateinit var handler : Handler
     private lateinit var adapter: CarouselAdapter
+
     private lateinit var adapterOngoing: ConcertAdapter
     private lateinit var adapterUpcoming: ConcertAdapter
 
     val db = Firebase.firestore
     var listOnGoingConcert = ArrayList<Concert>()
     var listUpComingConcert = ArrayList<Concert>()
+
     val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", Locale.ENGLISH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,17 +49,10 @@ class fListConcert : Fragment() {
 
         loadData()
 
-        //view pager, artist
+        //untuk viewpager
         init()
-        setUpTransformer()
 
-        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                handler.removeCallbacks(runnable)
-                handler.postDelayed(runnable , 5000)
-            }
-        })
+
     }
 
     fun readData(db: FirebaseFirestore, onComplete: () -> Unit) {
@@ -89,9 +84,7 @@ class fListConcert : Fragment() {
                     if (startPreOrderDate.toDate().after(Date())) {
                         // Upcoming concert: Pre-order belum dimulai
                         listUpComingConcert.add(concert)
-                    } else if (startPreOrderDate.toDate().before(Date()) && endPreOrderDate.toDate().after(
-                            Date()
-                        )) {
+                    } else if (startPreOrderDate.toDate().before(Date()) && endPreOrderDate.toDate().after(Date())) {
                         // Ongoing concert: Pre-order sedang berlangsung
                         listOnGoingConcert.add(concert)
                     }
@@ -106,8 +99,10 @@ class fListConcert : Fragment() {
 
     fun loadData(){
         val view = requireView()
+
         ongoingConcert = view.findViewById(R.id.rvOngoing)
         upcomingConcert = view.findViewById(R.id.rvUpcoming)
+
         readData(db){
             adapterOngoing = ConcertAdapter(listOnGoingConcert,ongoingConcert)
             adapterOngoing.setOnItemClickCallback(object : ConcertAdapter.OnItemClickCallback {
@@ -132,8 +127,10 @@ class fListConcert : Fragment() {
             ongoingConcert.adapter = adapterOngoing
             upcomingConcert.adapter = adapterUpcoming
 
+
             ongoingConcert.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             upcomingConcert.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
 
             val _tvNoOngoingConcert = view.findViewById<TextView>(R.id.tvNoOngoingConcert)
             val _tvNoUpComingConcert = view.findViewById<TextView>(R.id.tvNoUpComingConcert)
@@ -158,13 +155,11 @@ class fListConcert : Fragment() {
 
     override fun onPause() {
         super.onPause()
-
         handler.removeCallbacks(runnable)
     }
 
     override fun onResume() {
         super.onResume()
-
         handler.postDelayed(runnable , 5000)
     }
 
@@ -172,11 +167,6 @@ class fListConcert : Fragment() {
         viewPager2.currentItem = viewPager2.currentItem + 1
     }
 
-    private fun setUpTransformer(){
-        val transformer = CompositePageTransformer()
-        transformer.addTransformer(MarginPageTransformer(40))
-        viewPager2.setPageTransformer(transformer)
-    }
 
     private fun init(){
         val view = requireView()
@@ -192,15 +182,15 @@ class fListConcert : Fragment() {
 
         adapter = CarouselAdapter(itemList, viewPager2)
         viewPager2.adapter = adapter
+
         viewPager2.setCurrentItem(1, false)
+
         viewPager2.offscreenPageLimit = 3
-        viewPager2.clipToPadding = false
-        viewPager2.clipChildren = false
+
         viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
 
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
-
                 super.onPageScrollStateChanged(state)
                 adapter.notifyDataSetChanged()
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
@@ -210,6 +200,19 @@ class fListConcert : Fragment() {
                         itemCount - 1 -> viewPager2.setCurrentItem(1, false)
                     }
                 }
+            }
+        })
+
+
+        val transformer = CompositePageTransformer()
+        transformer.addTransformer(MarginPageTransformer(40))
+        viewPager2.setPageTransformer(transformer)
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                handler.removeCallbacks(runnable)
+                handler.postDelayed(runnable , 5000)
             }
         })
     }

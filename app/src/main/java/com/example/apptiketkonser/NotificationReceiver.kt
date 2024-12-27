@@ -23,7 +23,6 @@ class NotificationReceiver : BroadcastReceiver() {
         )
         notificationManager.createNotificationChannel(channel)
 
-
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)

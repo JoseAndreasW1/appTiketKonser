@@ -65,17 +65,4 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Concert Name TextView outside the Card -->
-    <TextView
-        android:id="@+id/concertName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Concert Name"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:gravity="center" />
-
 </LinearLayout>

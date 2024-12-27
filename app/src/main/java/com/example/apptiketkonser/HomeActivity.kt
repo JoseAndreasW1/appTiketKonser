@@ -17,7 +17,6 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         //fullscreen
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -29,31 +28,32 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
-        //Gradient logo VibeTix
+        //Gradient text VibeTix
         val _tvGradient = findViewById<TextView>(R.id.tvGradient)
         val paint = _tvGradient.paint
         val width = paint.measureText(_tvGradient.text.toString())
         val shader = LinearGradient(
-            0f, 0f, width, _tvGradient.textSize,
+            0f, //x-cordinate
+            0f, //y-cordinate
+            width,
+            _tvGradient.textSize,
             intArrayOf(
-                Color.parseColor("#980674"),
-                Color.parseColor("#7C3AED")
+                Color.parseColor("#980674"),    //color awal
+                Color.parseColor("#7C3AED")     //color end
             ),
             null,
-            Shader.TileMode.CLAMP
+            Shader.TileMode.CLAMP //gradient behaviour ketika text terlalu panjang
         )
         paint.shader = shader
-        _tvGradient.invalidate()
+        _tvGradient.invalidate() // nge notify system untuk redrawn
 
         val _tabHome = findViewById<Button>(R.id.tabHome)
         val _tabTickets = findViewById<Button>(R.id.tabTickets)
-
         val _btnSignOut = findViewById<Button>(R.id.btnSignOut)
 
         _btnSignOut.setOnClickListener {
             val sp = getSharedPreferences("user", MODE_PRIVATE)
             val editor = sp.edit()
-
             if (editor != null) {
                 editor.clear()
                 editor.apply()
@@ -64,11 +64,12 @@ class HomeActivity : AppCompatActivity() {
         }
 
         _tabTickets.setOnClickListener {
-            _tabHome.setBackgroundResource(android.R.color.transparent)
+            _tabHome.setBackgroundResource(android.R.color.transparent) //ubah warna button
             _tabHome.setTextColor(resources.getColor(R.color.black))
             _tabTickets.setBackgroundResource(R.drawable.gradient_purplebutton)
             _tabTickets.setTextColor(resources.getColor(R.color.white))
 
+            //ubah fragment
             val mFragmentManager = supportFragmentManager
             val mfMyTickets = fMyTickets()
             mFragmentManager.findFragmentByTag(fMyTickets::class.java.simpleName)
@@ -80,6 +81,7 @@ class HomeActivity : AppCompatActivity() {
                     fMyTickets::class.java.simpleName)
                 .commit()
         }
+
 
         _tabHome.setOnClickListener {
             _tabTickets.setBackgroundResource(android.R.color.transparent)

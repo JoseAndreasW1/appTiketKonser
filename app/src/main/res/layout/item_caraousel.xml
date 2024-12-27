@@ -9,7 +9,6 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
                 <!-- Image Background -->
                 <ImageView
                     android:id="@+id/imageView"
@@ -17,16 +16,15 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:src="@drawable/artist1" />
-
                 <!-- Text Overlay -->
                 <TextView
                     android:id="@+id/textOverlay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:textAlignment="center"
                     android:background="#80000000"
                     android:padding="16dp"
-                    android:textAlignment="center"
                     android:text="Concert Name"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"

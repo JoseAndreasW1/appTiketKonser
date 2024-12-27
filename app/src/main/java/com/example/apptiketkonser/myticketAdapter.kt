@@ -32,12 +32,10 @@ class MyTicketAdapter(
 
     class MyTicketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val poster: ImageView = itemView.findViewById(R.id.poster)
-//        val QRPoster: ImageView = itemView.findViewById(R.id.qr)
         val concertName: TextView = itemView.findViewById(R.id.concertName)
         val concertDate: TextView = itemView.findViewById(R.id.concertDate)
         val transactionDate: TextView = itemView.findViewById(R.id.purchaseDate)
         val concertVenue :TextView = itemView.findViewById(R.id.concertVenue)
-
         val _btnDetail = itemView.findViewById<ImageView>(R.id.btnDetail)
     }
 
@@ -71,8 +69,8 @@ class MyTicketAdapter(
                     Picasso.get().load(imageUrl).into(holder.poster)
 
                     holder._btnDetail.setOnClickListener {
-                        val dialogView = LayoutInflater.from(holder.itemView.context).inflate(R.layout.qr_dialog, null)
-                        val qrImageView = dialogView.findViewById<ImageView>(R.id.qrImageView)
+                        val dialogView = LayoutInflater.from(holder.itemView.context).inflate(R.layout.qr_dialog, null) // ngambil layout qr_dialog
+                        val qrImageView = dialogView.findViewById<ImageView>(R.id.qrImageView) // ngambil id qrImageView dari qr_dialog
 
                         //Menggambar QR Code
                         val qrCodeString = concertName
@@ -92,10 +90,8 @@ class MyTicketAdapter(
                             .setPositiveButton("Close") { dialog, _ -> dialog.dismiss() }
                             .show()
                     }
-//                    Picasso.get().load(imageUrl).into(holder.QRPoster)
             }
             .addOnFailureListener { e ->
-                // Handle errors
                 holder.concertName.text = "Error loading concert"
                 holder.concertDate.text = ""
             }

@@ -62,49 +62,10 @@ class DetailConcertActivity : AppCompatActivity() {
         val _tvNumberOfTickets = findViewById<TextView>(R.id.tvNumberOfTickets)
         val _tvSaldo = findViewById<TextView>(R.id.tvSaldo)
         val _btnBuyTicket = findViewById<Button>(R.id.btnBuyTicket)
-        _btnBuyTicket.setOnClickListener {
-
-        }
-
 
         Picasso.get().load(concert?.imageUrl).into(_ivImage)
         Picasso.get().load(concert?.imageUrl).into(_ivImage2)
 
-        // Get the bitmap from the ImageView (_ivImage2) after loading the image
-        _ivImage2.post {
-            // Decode the image into a Bitmap (once Picasso has loaded it into _ivImage2)
-            val drawable = _ivImage2.drawable
-            if (drawable is BitmapDrawable) {
-                val originalBitmap = drawable.bitmap
-
-                // Create a mutable copy of the original bitmap
-                val blurredBitmap = Bitmap.createBitmap(
-                    originalBitmap.width,
-                    originalBitmap.height,
-                    Bitmap.Config.ARGB_8888
-                )
-
-                // Initialize RenderScript and allocations
-                val rs = RenderScript.create(this)
-                val input = Allocation.createFromBitmap(rs, originalBitmap)
-                val output = Allocation.createFromBitmap(rs, blurredBitmap)
-
-                // Create the blur script and set the blur radius
-                val blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
-                blurScript.setRadius(25f) // Max blur radius is 25
-                blurScript.setInput(input)
-                blurScript.forEach(output)
-
-                // Copy the blurred result to the output bitmap
-                output.copyTo(blurredBitmap)
-
-                // Set the blurred bitmap to the background ImageView
-                _ivImage2.setImageBitmap(blurredBitmap)
-
-                // Clean up RenderScript resources
-                rs.destroy()
-            }
-        }
         // get user data
         val user = getSharedPreferences("user", MODE_PRIVATE).getString("user", null)
         val db = Firebase.firestore
@@ -215,7 +176,7 @@ class DetailConcertActivity : AppCompatActivity() {
                         val timer = 120000
                         Log.i("DataTimer", timer.toString())
                         // testing 2 mnt dri skrg
-//                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timer, pendingIntent)
+                        //alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timer, pendingIntent)
 
                         // set time 2 hours prior
                         alarmManager.setExact(

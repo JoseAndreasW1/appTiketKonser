@@ -35,8 +35,8 @@ class fMyTickets : Fragment() {
         adapter = MyTicketAdapter(transactionList)
         recyclerView.adapter = adapter
 
-        fetchTransactions()
 
+        fetchTransactions()
         return view
     }
 
