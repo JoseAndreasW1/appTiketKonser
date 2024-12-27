@@ -172,6 +172,8 @@ class DetailConcertActivity : AppCompatActivity() {
 
                         val tbConcert = db.collection("tbConcert").document(concert!!.id)
                         val totalTicket = transaction.get(tbConcert).get("NumberOfTickets") as Long
+                        if (totalTicket <= 0)
+                            throw Exception("Tiket telah habis!")
 
                         transaction.update(
                             tbUser,
