@@ -14,7 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import com.google.gson.Gson
+//import com.google.gson.Gson
 import java.security.MessageDigest
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,10 +38,11 @@ class fLogin : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Check kalo user udh disimpan di shared preferences, klo udh lgsg msk home
+        // Check kalo user udh disimpan di shared preferences
         sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
         val user = sp.getString("user", null)
 
+        //Kalau sudah ada, langsung ke home
         if (user != null) {
             db.collection("tbUser")
                 .document(user)
@@ -58,6 +59,7 @@ class fLogin : Fragment() {
 
         val _btnSignUp = view.findViewById<Button>(R.id.btnSignUp)
         _btnSignUp.setOnClickListener {
+            //Ganti ke fragment signup
             val mfSignup = fSignup()
             val mFragmentManager = parentFragmentManager
             mFragmentManager.beginTransaction().apply {
