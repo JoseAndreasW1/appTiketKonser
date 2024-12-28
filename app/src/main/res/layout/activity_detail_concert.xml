@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingVertical="32dp"
-        app:layout_constraintVertical_bias="0.5">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingVertical="32dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.5">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/wallpaper"
-        />
+        android:background="@drawable/wallpaper" />
     <!-- Background Image -->
-        <ImageView
-            android:id="@+id/posterbackground"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/artist2"
-            android:contentDescription="poster_bawah"/>
-        <!-- Blurred white overlay -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:alpha="0.2" />
+    <ImageView
+        android:id="@+id/posterbackground"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="poster_bawah"
+        android:scaleType="centerCrop"
+        android:src="@drawable/artist2" />
+    <!-- Blurred white overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:background="@color/white" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -62,9 +61,24 @@
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/artist2" />
-
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView14"
+                app:layout_constraintStart_toStartOf="@+id/textView14"
+                app:layout_constraintTop_toBottomOf="@+id/cardView2">
+
+                <ImageButton
+                    android:id="@+id/btnFav"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/vector_favorite" />
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/textView11"
@@ -119,8 +133,8 @@
                 android:layout_marginEnd="32dp"
                 android:text="Sunday, 8 Nov 2022 17:55 "
                 android:textColor="@color/white"
-                android:textStyle="bold"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/textView9"
                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
@@ -164,10 +178,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="24dp"
-                android:text="DESCRIPTION"
                 android:letterSpacing="0.1"
-                android:textStyle="bold"
+                android:text="DESCRIPTION"
                 android:textColor="@color/white"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view2" />
 
@@ -191,8 +205,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
-                android:text="VENUE"
                 android:letterSpacing="0.1"
+                android:text="VENUE"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -269,10 +283,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:letterSpacing="0.1"
                 android:text="SNAG A TICKET AT "
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:letterSpacing="0.1"
                 app:layout_constraintStart_toEndOf="@+id/tvStartPreOrderDate"
                 app:layout_constraintStart_toStartOf="@+id/textview18"
                 app:layout_constraintTop_toBottomOf="@+id/tvStartPreOrderDate" />
@@ -323,9 +337,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@drawable/background_purchase"
+        android:paddingHorizontal="20dp"
         android:paddingTop="32dp"
         android:paddingBottom="12dp"
-        android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -335,8 +349,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Balance"
-            android:textSize="14sp"
             android:textColor="@color/black"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -344,9 +358,9 @@
             android:id="@+id/tvSaldo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:text="Rp. 0"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -368,8 +382,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Price"
-            android:textSize="14sp"
             android:textColor="@color/black"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view3" />
 
@@ -378,8 +392,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rp.300.000,00"
-            android:textStyle="bold"
             android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/textview23"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textview23" />

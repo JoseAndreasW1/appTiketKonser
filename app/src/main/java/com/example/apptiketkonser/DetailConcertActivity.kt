@@ -17,6 +17,7 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -197,6 +198,24 @@ class DetailConcertActivity : AppCompatActivity() {
                             "Something went wrong, please try again later ${exception.message}",
                             Toast.LENGTH_SHORT
                         ).show()
+                    }
+            }
+        }
+
+        val _btnFav = findViewById<ImageButton>(R.id.btnFav)
+        _btnFav.setOnClickListener {
+            if (user != null) {
+                db.collection("tbUser")
+                    .document(user)
+                    .collection("tbFavorite")
+                    .document(concert!!.id)
+                    .set(emptyMap<String, Any>())
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Berhasil set favorite", Toast.LENGTH_SHORT).show()
+                        _btnFav.setBackgroundResource(R.drawable.vector_close)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Gagal set favorite", Toast.LENGTH_SHORT).show()
                     }
             }
         }
