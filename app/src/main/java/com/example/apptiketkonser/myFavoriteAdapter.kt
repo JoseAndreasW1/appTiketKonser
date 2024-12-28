@@ -11,11 +11,14 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.firestore
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
@@ -25,32 +28,32 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class myFavoriteAdapter(
-    private val favoriteList: List<Transaction>
+    private val favoriteList: MutableList<Favorite>
 
-) : RecyclerView.Adapter<myFavoriteAdapter.MyTicketViewHolder>() {
+) : RecyclerView.Adapter<myFavoriteAdapter.MyFavoriteViewHolder>() {
     val sdf = SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH)
 
-    class MyTicketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MyFavoriteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val poster: ImageView = itemView.findViewById(R.id.poster)
         val concertName: TextView = itemView.findViewById(R.id.concertName)
         val concertDate: TextView = itemView.findViewById(R.id.concertDate)
         val concertVenue :TextView = itemView.findViewById(R.id.concertVenue)
-        val _btnDetail = itemView.findViewById<ImageView>(R.id.btnDetail)
+        val _btnUnlike = itemView.findViewById<ImageView>(R.id.btnUnlike)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyTicketViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyFavoriteViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_transaction, parent, false)
-        return MyTicketViewHolder(view)
+            .inflate(R.layout.item_recyler_favorite, parent, false)
+        return MyFavoriteViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MyTicketViewHolder, position: Int) {
-        val transaction = favoriteList[position]
+    override fun onBindViewHolder(holder: MyFavoriteViewHolder, position: Int) {
+        val favorite = favoriteList[position]
 
         // Query tbconcert table to get concert details
         val db = Firebase.firestore
         db.collection("tbConcert")
-            .document(transaction.concertId)
+            .document(favorite.concertId)
             .get()
             .addOnSuccessListener { document ->
                 val concertName = document.data?.get("Name").toString()
@@ -65,8 +68,25 @@ class myFavoriteAdapter(
                 holder.concertDate.text = formattedStartConcertDate
 
                 Picasso.get().load(imageUrl).into(holder.poster)
-                holder._btnDetail.setOnClickListener {
-
+                holder._btnUnlike.setOnClickListener {
+                    val sp = holder.itemView.context.getSharedPreferences("user", MODE_PRIVATE)
+                    val user = sp.getString("user", null)
+                    if (user != null) {
+                        db.collection("tbUser")
+                            .document(user)
+                            .collection("tbFavorite")
+                            .document(favorite.concertId)
+                            .delete()
+                            .addOnSuccessListener {
+                                Toast.makeText(holder.itemView.context, "Concert berhasil terhapus dari daftar favorit", Toast.LENGTH_SHORT).show()
+                                favoriteList.toMutableList().removeAt(position)
+                                notifyItemRemoved(position)
+                                notifyItemRangeChanged(position, favoriteList.size)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("error", exception.toString())
+                            }
+                    }
                 }
             }
             .addOnFailureListener { e ->
