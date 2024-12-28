@@ -63,22 +63,20 @@
                     android:src="@drawable/artist2" />
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp"
-                app:layout_constraintBottom_toTopOf="@+id/textView14"
-                app:layout_constraintStart_toStartOf="@+id/textView14"
-                app:layout_constraintTop_toBottomOf="@+id/cardView2">
-
-                <ImageButton
-                    android:id="@+id/btnFav"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/vector_favorite" />
-            </androidx.cardview.widget.CardView>
+            <ImageView
+                android:id="@+id/btnFav"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/gradient_purplebutton"
+                android:clipToOutline="true"
+                android:contentDescription="QR Code"
+                android:padding="12dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/vector_favorite"
+                app:layout_constraintStart_toStartOf="@+id/tvStartConcertDate"
+                app:layout_constraintTop_toBottomOf="@+id/tvStartConcertDate" />
 
             <TextView
                 android:id="@+id/textView11"
@@ -135,7 +133,6 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/textView9"
                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 

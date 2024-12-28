@@ -202,7 +202,7 @@ class DetailConcertActivity : AppCompatActivity() {
             }
         }
 
-        val _btnFav = findViewById<ImageButton>(R.id.btnFav)
+        val _btnFav = findViewById<ImageView>(R.id.btnFav)
         _btnFav.setOnClickListener {
             if (user != null) {
                 db.collection("tbUser")
@@ -212,11 +212,12 @@ class DetailConcertActivity : AppCompatActivity() {
                     .set(emptyMap<String, Any>())
                     .addOnSuccessListener {
                         Toast.makeText(this, "Berhasil set favorite", Toast.LENGTH_SHORT).show()
-                        _btnFav.setBackgroundResource(R.drawable.vector_close)
+                        _btnFav.setImageResource(R.drawable.vector_close)
                     }
                     .addOnFailureListener {
                         Toast.makeText(this, "Gagal set favorite", Toast.LENGTH_SHORT).show()
                     }
+
             }
         }
     }
