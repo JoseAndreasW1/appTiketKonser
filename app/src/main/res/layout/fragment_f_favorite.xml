@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Here are the tickets you've ordered!!"
+        android:text="Here are the tickets you're interested in!!"
         android:textColor="@color/white"
         android:textSize="20dp"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="32dp"
-        android:id="@+id/recyclerViewMyTickets"
+        android:id="@+id/recyclerViewFavorite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

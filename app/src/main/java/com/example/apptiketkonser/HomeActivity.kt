@@ -108,6 +108,7 @@ class HomeActivity : AppCompatActivity() {
                     fListConcert::class.java.simpleName)
                 .commit()
         }
+
         _tabFavorite.setOnClickListener {
             _tabTickets.setBackgroundResource(android.R.color.transparent)
             _tabTickets.setTextColor(resources.getColor(R.color.black))
@@ -117,14 +118,14 @@ class HomeActivity : AppCompatActivity() {
             _tabFavorite.setTextColor(resources.getColor(R.color.white))
 
             val mFragmentManager = supportFragmentManager
-            val mfListConcert = fListConcert()
-            mFragmentManager.findFragmentByTag(fListConcert::class.java.simpleName)
+            val mfFavorite = fFavorite()
+            mFragmentManager.findFragmentByTag(fFavorite::class.java.simpleName)
             mFragmentManager
                 .beginTransaction()
                 .replace(
                     R.id.frameContainer,
-                    mfListConcert,
-                    fListConcert::class.java.simpleName)
+                    mfFavorite,
+                    fFavorite::class.java.simpleName)
                 .commit()
         }
 
