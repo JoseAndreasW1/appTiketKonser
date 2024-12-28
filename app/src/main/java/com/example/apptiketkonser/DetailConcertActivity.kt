@@ -42,7 +42,8 @@ class DetailConcertActivity : AppCompatActivity() {
         enableEdgeToEdge()
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         setContentView(R.layout.activity_detail_concert)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -89,7 +90,8 @@ class DetailConcertActivity : AppCompatActivity() {
         //Tolong set Saldo di sini
         if (tbUser != null) {
             tbUser.get().addOnSuccessListener { query ->
-                _tvSaldo.text = "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID")).format(query.get("saldo").toString().toInt())
+                _tvSaldo.text = "Rp. " + NumberFormat.getNumberInstance(Locale("id", "ID"))
+                    .format(query.get("saldo").toString().toInt())
             }
         }
         _tvNumberOfTickets.text = concert?.numberOfTickets.toString()
@@ -203,21 +205,47 @@ class DetailConcertActivity : AppCompatActivity() {
         }
 
         val _btnFav = findViewById<ImageView>(R.id.btnFav)
+        var fav = false
+        if (user != null) {
+            db.collection("tbUser")
+                .document(user)
+                .collection("tbFavorite")
+                .document(concert!!.id)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        fav = true
+                        _btnFav.setImageResource(R.drawable.vector_close)
+                    }
+                }
+        }
         _btnFav.setOnClickListener {
             if (user != null) {
-                db.collection("tbUser")
+                val tbFav = db.collection("tbUser")
                     .document(user)
                     .collection("tbFavorite")
                     .document(concert!!.id)
-                    .set(emptyMap<String, Any>())
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Berhasil set favorite", Toast.LENGTH_SHORT).show()
-                        _btnFav.setImageResource(R.drawable.vector_close)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Gagal set favorite", Toast.LENGTH_SHORT).show()
-                    }
-
+                if (fav) {
+                    tbFav.delete()
+                        .addOnSuccessListener {
+                            fav = false
+                            Toast.makeText(this, "Berhasil hapus favorite", Toast.LENGTH_SHORT).show()
+                            _btnFav.setImageResource(R.drawable.vector_favorite)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal hapus favorite", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    tbFav.set(emptyMap<String, Any>())
+                        .addOnSuccessListener {
+                            fav = true
+                            Toast.makeText(this, "Berhasil set favorite", Toast.LENGTH_SHORT).show()
+                            _btnFav.setImageResource(R.drawable.vector_close)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal set favorite", Toast.LENGTH_SHORT).show()
+                        }
+                }
             }
         }
     }
