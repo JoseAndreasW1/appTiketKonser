@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper">
 
+    <!--Sticky tab bar-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,11 +23,11 @@
                 android:id="@+id/constraintLogo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:paddingVertical="16dp"
+                android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:orientation="horizontal">
+                android:paddingVertical="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/logo"
@@ -84,12 +85,12 @@
                     android:id="@+id/tvGradient"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:text="Ready to Jam to The Music?"
                     android:textSize="22dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/logo"
-                    app:layout_constraintTop_toBottomOf="@id/btnSignOut"
-                    android:layout_marginTop="16dp"/>
+                    app:layout_constraintTop_toBottomOf="@id/btnSignOut" />
 
                 <TextView
                     android:id="@+id/description"
@@ -107,13 +108,12 @@
                 android:id="@+id/frameContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/constraintLogo"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/constraintLogo" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-<!--Sticky tab bar-->
     <LinearLayout
         android:id="@+id/stickyTab"
         android:layout_width="match_parent"
@@ -145,6 +145,17 @@
             android:text="My Tickets"
             android:background="@android:color/transparent"
             android:textStyle="bold"
-        />
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tabFavorite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Favorite"
+            android:background="@android:color/transparent"
+            android:textStyle="bold"
+            />
+
     </LinearLayout>
 </RelativeLayout>

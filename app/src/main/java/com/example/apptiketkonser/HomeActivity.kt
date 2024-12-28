@@ -49,6 +49,7 @@ class HomeActivity : AppCompatActivity() {
 
         val _tabHome = findViewById<Button>(R.id.tabHome)
         val _tabTickets = findViewById<Button>(R.id.tabTickets)
+        val _tabFavorite = findViewById<Button>(R.id.tabFavorite)
         val _btnSignOut = findViewById<Button>(R.id.btnSignOut)
 
         _btnSignOut.setOnClickListener {
@@ -66,6 +67,10 @@ class HomeActivity : AppCompatActivity() {
         _tabTickets.setOnClickListener {
             _tabHome.setBackgroundResource(android.R.color.transparent) //ubah warna button
             _tabHome.setTextColor(resources.getColor(R.color.black))
+
+            _tabFavorite.setBackgroundResource(android.R.color.transparent) //ubah warna button
+            _tabFavorite.setTextColor(resources.getColor(R.color.black))
+
             _tabTickets.setBackgroundResource(R.drawable.gradient_purplebutton)
             _tabTickets.setTextColor(resources.getColor(R.color.white))
 
@@ -88,6 +93,28 @@ class HomeActivity : AppCompatActivity() {
             _tabTickets.setTextColor(resources.getColor(R.color.black))
             _tabHome.setBackgroundResource(R.drawable.gradient_purplebutton)
             _tabHome.setTextColor(resources.getColor(R.color.white))
+            _tabFavorite.setBackgroundResource(android.R.color.transparent) //ubah warna button
+            _tabFavorite.setTextColor(resources.getColor(R.color.black))
+
+
+            val mFragmentManager = supportFragmentManager
+            val mfListConcert = fListConcert()
+            mFragmentManager.findFragmentByTag(fListConcert::class.java.simpleName)
+            mFragmentManager
+                .beginTransaction()
+                .replace(
+                    R.id.frameContainer,
+                    mfListConcert,
+                    fListConcert::class.java.simpleName)
+                .commit()
+        }
+        _tabFavorite.setOnClickListener {
+            _tabTickets.setBackgroundResource(android.R.color.transparent)
+            _tabTickets.setTextColor(resources.getColor(R.color.black))
+            _tabHome.setBackgroundResource(android.R.color.transparent)
+            _tabHome.setTextColor(resources.getColor(R.color.black))
+            _tabFavorite.setBackgroundResource(R.drawable.gradient_purplebutton) //ubah warna button
+            _tabFavorite.setTextColor(resources.getColor(R.color.white))
 
             val mFragmentManager = supportFragmentManager
             val mfListConcert = fListConcert()
