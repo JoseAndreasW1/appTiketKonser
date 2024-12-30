@@ -79,9 +79,10 @@ class myFavoriteAdapter(
                             .delete()
                             .addOnSuccessListener {
                                 Toast.makeText(holder.itemView.context, "Concert berhasil terhapus dari daftar favorit", Toast.LENGTH_SHORT).show()
-                                favoriteList.toMutableList().removeAt(position)
+                                favoriteList.removeAt(position)
                                 notifyItemRemoved(position)
                                 notifyItemRangeChanged(position, favoriteList.size)
+                                notifyDataSetChanged()
                             }
                             .addOnFailureListener { exception ->
                                 Log.d("error", exception.toString())

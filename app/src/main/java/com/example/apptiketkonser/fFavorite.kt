@@ -40,7 +40,6 @@ class fFavorite : Fragment() {
         fetchFavorites()
         return view
     }
-
     private fun fetchFavorites() {
         val db = Firebase.firestore
         val sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
